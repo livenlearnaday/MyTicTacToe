@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">MyTicTacToe</string>
+    <string name="play_again">Play Again</string>
+    <string name="multiplayer">Multiplayer</string>
+    <string name="single_player">Single Player</string>
+    <string name="game_over">Game Over</string>
+    <string name="no_winner_text">It\'s a tie!</string>
+    <string name="player">Player</string>
+    <string name="wins">wins</string>
+    <string name="turn">turn</string>
+    <string name="reset">Reset</string>
+    <string name="grid_size">Grid size </string>
+    <string name="history">History plays</string>
+    <string name="confirm">Confirm</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="dialog_reset_game_warning">This will reset the current game. Do you want to continue?</string>
+    <string name="game_play_record">Game Play Records</string>
+
+    <string name="grant_app_permissions">Allow write storage permission</string>
+
+
+
+
+</resources>
