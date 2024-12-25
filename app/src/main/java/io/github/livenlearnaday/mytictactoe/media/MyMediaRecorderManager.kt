@@ -53,9 +53,8 @@ object MyMediaRecorderManager {
         try {
             mMediaRecorder?.prepare()
         } catch (e: IOException) {
-            Log.d("log", "screen record start error")
             isMediaRecorderError = true
-            Log.e("MyMediaRecorderManager", "e: $e, e.messsage: ${e.message}")
+            Log.e("MyMediaRecorderManager", "e: $e")
             currentFile.delete()
             e.printStackTrace()
         } finally {
@@ -76,14 +75,12 @@ object MyMediaRecorderManager {
         try {
             mMediaRecorder?.stop()
             mMediaRecorder?.reset()
-            Log.d("log", "screen record stopped")
             if (isAbortGame) currentFile.delete()
         } catch (e: RuntimeException) {
-            Log.d("log", "screen record stop error")
             isMediaRecorderError = true
             Log.e(
                 "MyMediaRecorderManager",
-                "e: $e, e.cause: ${e.cause},  e.stackTrace: ${e.stackTrace}"
+                "e: $e"
             )
             currentFile.delete()
             e.printStackTrace()

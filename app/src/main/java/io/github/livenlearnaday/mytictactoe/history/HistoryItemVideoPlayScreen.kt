@@ -28,7 +28,6 @@ filePath: String
         factory = { context ->
             PlayerView(context).apply {
                 MyVideoPlayerManager.initializePlayer(this, context)
-                Log.d("log", "filePath: $filePath")
                 MyVideoPlayerManager.prepare(filePath)
             }
         }
