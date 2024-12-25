@@ -11,8 +11,6 @@ import java.util.Date
 
 object MyMediaRecorderManager {
 
-    private const val DISPLAY_WIDTH: Int = 720
-    private const val DISPLAY_HEIGHT: Int = 1280
     const val FILE_FORMAT_VIDEO = ".mp4"
     private const val FILE_FOLDER = "/mytictactoe"
     private const val SEPARATOR = "/"
@@ -24,7 +22,12 @@ object MyMediaRecorderManager {
 
     var filePath: String = ""
 
-    var filePathPrefix: String = ""
+    var filePathPrefix: String = Environment.getExternalStoragePublicDirectory(
+        Environment
+            .DIRECTORY_DOWNLOADS
+    )
+        .toString() + StringBuilder(FILE_FOLDER)
+        .append(SEPARATOR)
 
     var isMediaRecorderError: Boolean = false
 
@@ -41,26 +44,11 @@ object MyMediaRecorderManager {
         mMediaRecorder = MediaRecorder()
         mMediaRecorder?.reset()
         mMediaRecorder?.apply {
-            fileName = SimpleDateFormat("dd-MM-yyyy-hh_mm_ss").format(Date())
             setVideoSource(MediaRecorder.VideoSource.SURFACE)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setVideoEncoder(MediaRecorder.VideoEncoder.H264)
-            setVideoEncodingBitRate(512 * 1000)
-            createDirectory()
-            filePathPrefix = Environment.getExternalStoragePublicDirectory(
-                Environment
-                    .DIRECTORY_DOWNLOADS
-            )
-                .toString() + StringBuilder(FILE_FOLDER)
-                .append(SEPARATOR)
-            filePath = filePathPrefix + StringBuilder(fileName)
-                .append(FILE_FORMAT_VIDEO)
-                .toString()
-            currentFile = File(filePath)
-            setOutputFile(currentFile.absolutePath)
-            setVideoSize(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-            setVideoFrameRate(30)
-            setOrientationHint(0)
+            setOutputFile(createVideoFile())
+
         }
         try {
             mMediaRecorder?.prepare()
@@ -89,7 +77,7 @@ object MyMediaRecorderManager {
             mMediaRecorder?.stop()
             mMediaRecorder?.reset()
             Log.d("log", "screen record stopped")
-            if(isAbortGame) currentFile.delete()
+            if (isAbortGame) currentFile.delete()
         } catch (e: RuntimeException) {
             Log.d("log", "screen record stop error")
             isMediaRecorderError = true
@@ -119,6 +107,21 @@ object MyMediaRecorderManager {
         if (!dir.exists()) {
             dir.mkdirs()
         }
+    }
+
+    private fun createVideoFile(): File {
+        createDirectory()
+        fileName = createFileName()
+        filePath = filePathPrefix + StringBuilder(fileName)
+            .append(FILE_FORMAT_VIDEO)
+            .toString()
+        currentFile = File(filePath)
+
+        return currentFile
+    }
+
+    private fun createFileName(): String {
+        return SimpleDateFormat("dd-MM-yyyy-hh_mm_ss").format(Date())
     }
 
 

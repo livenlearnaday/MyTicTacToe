@@ -122,6 +122,14 @@ class GameViewModel(
                     }
                 }
             }
+
+            is GameAction.OnClickCell -> {
+                if (!gameState.winner.isWon) {
+                    updateIsMoved(
+                        makeMove(action.cell.row, action.cell.column)
+                    )
+                }
+            }
         }
     }
 
@@ -292,13 +300,13 @@ class GameViewModel(
         }
     }
 
-    fun hasConsecutiveSymbol(){
+    fun hasConsecutiveSymbol() {
 
     }
 
 
     fun resetGame() {
-        if(!gameState.winner.isWon) MyMediaRecorderManager.isAbortGame = true
+        if (!gameState.winner.isWon) MyMediaRecorderManager.isAbortGame = true
         gameState = gameState.copy(
             winner = Winner(currentPlayer = Player.EMPTY, isWon = false),
             currentPlayer = Player.X,
@@ -371,7 +379,7 @@ class GameViewModel(
         incrementMoveCount()
     }
 
-    private fun incrementMoveCount(){
+    private fun incrementMoveCount() {
         gameState = gameState.copy(
             moveCount = gameState.moveCount + 1
         )

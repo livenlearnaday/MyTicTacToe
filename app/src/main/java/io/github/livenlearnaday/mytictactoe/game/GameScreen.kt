@@ -30,9 +30,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -281,12 +278,7 @@ fun GameScreen(
                     CellWidget(
                         cell = cell,
                         onClick = {
-                            gameViewModel.updateIsMoved(
-                                gameViewModel.makeMove(
-                                    it.row,
-                                    it.column
-                                )
-                            )
+                            onGameAction(GameAction.OnClickCell(cell))
                         },
                         modifier = Modifier
                             .size(50.dp)
@@ -309,7 +301,7 @@ fun GameScreen(
                 if (gameState.winner.currentPlayer == Player.TIE) {
                     Text(
                         text = stringResource(R.string.no_winner_text),
-                        style = MaterialTheme.typography.displayMedium,
+                        style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier
                             .padding(16.dp),
                     )

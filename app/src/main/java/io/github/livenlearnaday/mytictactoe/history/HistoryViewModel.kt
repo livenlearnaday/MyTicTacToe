@@ -6,9 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.livenlearnaday.mytictactoe.data.model.GameRecord
-import io.github.livenlearnaday.mytictactoe.media.MyMediaRecorderManager
 import io.github.livenlearnaday.mytictactoe.usecase.interfaces.DeleteGameRecordByIdUseCase
 import io.github.livenlearnaday.mytictactoe.usecase.interfaces.FetchGameRecordsUseCase
+import io.github.livenlearnaday.mytictactoe.utils.checkIfFileExist
+import io.github.livenlearnaday.mytictactoe.utils.getVideoFilePath
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -55,37 +56,27 @@ class HistoryViewModel(
 
     }
 
-    private fun deleteFileInDevice(record: GameRecord){
-        val filePath =
-            MyMediaRecorderManager.filePathPrefix + record.fileName + MyMediaRecorderManager.FILE_FORMAT_VIDEO
-
-        val file = File(filePath)
-        val absolutePath = file.absolutePath
-        val fileWithAbsolutePath = File(absolutePath)
-       if(fileWithAbsolutePath.exists() ) {
-           fileWithAbsolutePath.delete()
-       }
-
+    private fun deleteFileInDevice(record: GameRecord) {
+        val filePath = record.fileName.getVideoFilePath
+        val file = File(filePath).absoluteFile
+        if (record.fileName.checkIfFileExist()) {
+            file.delete()
+        }
     }
 
     private fun checkSavedFiles(records: List<GameRecord>) {
         records.forEach { record ->
-            checkIfFileExist(record)
+            checkIfRecordNeedTobeUpdated(record)
         }
     }
 
 
-    private fun checkIfFileExist(record: GameRecord) {
-        val filePath =
-            MyMediaRecorderManager.filePathPrefix + record.fileName + MyMediaRecorderManager.FILE_FORMAT_VIDEO
+    private fun checkIfRecordNeedTobeUpdated(record: GameRecord) {
 
-        val file = File(filePath)
-        val absolutePath = file.absolutePath
-        val fileWithAbsolutePath = File(absolutePath)
         var recordsUpdated = 0
 
         when {
-            fileWithAbsolutePath.exists() -> record
+            record.fileName.checkIfFileExist() -> record
             else -> {
                 deleteGameRecordById(record)
                 recordsUpdated++

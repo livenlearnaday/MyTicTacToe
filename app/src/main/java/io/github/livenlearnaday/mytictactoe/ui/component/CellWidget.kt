@@ -13,13 +13,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import io.github.livenlearnaday.mytictactoe.data.model.Cell
 import io.github.livenlearnaday.mytictactoe.data.enums.Player
+import io.github.livenlearnaday.mytictactoe.data.model.Cell
 import io.github.livenlearnaday.mytictactoe.ui.icons.PanoramaFishEye
 
 
 @Composable
-fun CellWidget(cell: Cell, modifier: Modifier = Modifier, onClick: (cell: Cell) -> Unit) {
+fun CellWidget(
+    cell: Cell,
+    modifier: Modifier = Modifier,
+    onClick: (cell: Cell) -> Unit
+) {
     Card(
         modifier = modifier
             .clickable {
