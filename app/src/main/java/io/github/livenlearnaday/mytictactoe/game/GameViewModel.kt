@@ -13,6 +13,7 @@ import io.github.livenlearnaday.mytictactoe.data.model.Winner
 import io.github.livenlearnaday.mytictactoe.media.MyMediaRecorderManager
 import io.github.livenlearnaday.mytictactoe.media.MyMediaRecorderManager.isMediaRecorderError
 import io.github.livenlearnaday.mytictactoe.usecase.interfaces.SaveGameRecordUseCase
+import io.github.livenlearnaday.mytictactoe.utils.deleteFileByFileName
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -44,18 +45,11 @@ class GameViewModel(
         when (action) {
             is GameAction.ResetGame -> {
                 resetGame()
-                gameState = gameState.copy(
-                    uiMode = UiMode.NO_ACTION,
-                    isShowDialog = false
-                )
+                updateUiModeAndDialogTrigger(UiMode.NO_ACTION, false)
             }
 
             is GameAction.ResetAll -> {
                 resetAll()
-            }
-
-            is GameAction.GameCellClicked -> {
-                updateIsMoved(makeMove(action.cell.row, action.cell.column))
             }
 
             GameAction.DialogClose -> {
@@ -63,11 +57,11 @@ class GameViewModel(
             }
 
             is GameAction.DialogDismiss -> {
-                if (action.uiMode == UiMode.RESET_GAME || action.uiMode == UiMode.RESET_ALL || action.uiMode == UiMode.NO_ACTION) {
-                    updateIsSinglePlayer(!gameState.isSinglePlayer)
-                    updateUiMode(UiMode.NO_ACTION)
-                    updateIsShowDialog(false)
-                }
+                if (gameState.isChangedPlayerMode) updateIsSinglePlayer(
+                    !gameState.isSinglePlayer,
+                    false
+                )
+                updateUiModeAndDialogTrigger(UiMode.NO_ACTION, false)
             }
 
             GameAction.OnPlayerMove -> {
@@ -82,55 +76,58 @@ class GameViewModel(
 
             GameAction.OnClickResetIcon -> {
                 when {
-                    isBoardEmpty() -> resetAll()
+                    gameState.moveCount == 0 -> resetAll()
                     else -> {
-                        updateUiMode(UiMode.RESET_ALL)
-                        updateIsShowDialog(true)
+                        updateUiModeAndDialogTrigger(UiMode.RESET_ALL, true)
                     }
                 }
             }
 
             GameAction.OnClickHistoryPlaysIcon -> {
-                if (!isBoardEmpty()) {
-                    resetGame()
-                }
+                resetGame()
             }
 
             GameAction.OnClickMultiPlayerMode -> {
                 when {
-                    isBoardEmpty() -> updateIsSinglePlayer(false)
+                    gameState.moveCount == 0 -> updateIsSinglePlayer(false, false)
 
                     else -> {
-                        gameState = gameState.copy(
-                            isSinglePlayer = false,
-                            uiMode = UiMode.RESET_GAME,
-                            isShowDialog = true
-                        )
+                        updateIsSinglePlayer(false, true)
+                        updateUiModeAndDialogTrigger(UiMode.RESET_GAME, true)
                     }
                 }
             }
 
             GameAction.OnClickSinglePlayerMode -> {
                 when {
-                    isBoardEmpty() -> updateIsSinglePlayer(true)
+                    gameState.moveCount == 0 -> updateIsSinglePlayer(true, false)
                     else -> {
-                        gameState = gameState.copy(
-                            isSinglePlayer = true,
-                            uiMode = UiMode.RESET_GAME,
-                            isShowDialog = true
-                        )
+                        updateIsSinglePlayer(true, true)
+                        updateUiModeAndDialogTrigger(UiMode.RESET_GAME, true)
                     }
                 }
             }
 
             is GameAction.OnClickCell -> {
+                if (gameState.moveCount == 0) {
+                    startScreenRecording()
+                    updateFileName()
+
+                }
                 if (!gameState.winner.isWon) {
-                    updateIsMoved(
-                        makeMove(action.cell.row, action.cell.column)
-                    )
+                    updateIsMoved(makeMove(action.cell.row, action.cell.column))
                 }
             }
+
+            GameAction.StopRecording -> {
+                stopScreenRecording()
+            }
         }
+    }
+
+    private fun updateUiModeAndDialogTrigger(uiMode: UiMode, isShowDialog: Boolean) {
+        updateUiMode(uiMode)
+        updateIsShowDialog(isShowDialog)
     }
 
 
@@ -140,11 +137,10 @@ class GameViewModel(
             updateCell(Cell(row = row, column = col, player = gameState.currentPlayer))
             updateCurrentPlayer(if (gameState.currentPlayer == Player.X) Player.O else Player.X)
 
-            if (gameState.moveCount == 1) startScreenRecording()
-
             checkForWin()
             return true
         }
+
         return false
     }
 
@@ -191,7 +187,7 @@ class GameViewModel(
 
 
     fun checkForWin() {
-        if (!isBoardEmpty()) {
+        if (gameState.moveCount > 2) {
 
             // Check rows
             for (row in 0 until gameState.gridSize) {
@@ -300,20 +296,18 @@ class GameViewModel(
         }
     }
 
-    fun hasConsecutiveSymbol() {
-
-    }
-
 
     fun resetGame() {
-        if (!gameState.winner.isWon) MyMediaRecorderManager.isAbortGame = true
+        if (!gameState.winner.isWon) gameState.currentGameFileName.deleteFileByFileName()
+
         gameState = gameState.copy(
             winner = Winner(currentPlayer = Player.EMPTY, isWon = false),
             currentPlayer = Player.X,
-            isMoved = false
+            isMoved = false,
+            moveCount = 0,
+            currentGameFileName = ""
         )
         resetCells(gameState.gridSize)
-        stopScreenRecording()
 
     }
 
@@ -336,26 +330,17 @@ class GameViewModel(
     }
 
 
-    fun updateIsSinglePlayer(isSinglePlayer: Boolean) {
+    fun updateIsSinglePlayer(isSinglePlayer: Boolean, isChangedPlayerMode: Boolean) {
         gameState = gameState.copy(
-            isSinglePlayer = isSinglePlayer
+            isSinglePlayer = isSinglePlayer,
+            isChangedPlayerMode = isChangedPlayerMode
         )
     }
 
     fun resetAll() {
         resetGame()
-        updateIsSinglePlayer(false)
-        updateUiMode(UiMode.NO_ACTION)
-        updateIsShowDialog(false)
-    }
-
-
-    fun isBoardEmpty(): Boolean {
-        return _cells.value.all { row ->
-            row.all {
-                it.player == Player.EMPTY
-            }
-        }
+        updateIsSinglePlayer(false, false)
+        updateUiModeAndDialogTrigger(UiMode.NO_ACTION, false)
     }
 
     fun updateGridSize(gridSize: Int) {
@@ -370,7 +355,6 @@ class GameViewModel(
                 Cell(row = row, column = col, player = Player.EMPTY)
             }
         }
-        stopScreenRecording()
     }
 
     fun updateCell(cell: Cell) {
@@ -389,32 +373,22 @@ class GameViewModel(
         gameState = gameState.copy(
             winner = Winner(currentPlayer = player, isWon = true)
         )
-        stopScreenRecording()
+
         if (!isMediaRecorderError) {
             saveGameRecord(
                 GameRecord(
-                    fileName = MyMediaRecorderManager.fileName,
+                    fileName = gameState.currentGameFileName,
                     filePath = MyMediaRecorderManager.filePath,
                     winner = "Player ${gameState.winner.currentPlayer}"
                 )
             )
         }
-
-    }
-
-    private fun resetWinner() {
-        gameState = gameState.copy(
-            winner = Winner(currentPlayer = Player.EMPTY, isWon = false),
-            currentPlayer = Player.X
-        )
     }
 
     fun updateGameBoard(gridSize: String) {
         val gridSizeToUpdate = gridSize.toIntOrNull() ?: DEFAULT_GRID_SIZE
         updateGridSize(gridSizeToUpdate)
-        resetCells(gridSizeToUpdate)
-        resetWinner()
-        updateIsMoved(false)
+        resetGame()
     }
 
     fun saveGameRecord(gameRecord: GameRecord) {
@@ -429,6 +403,12 @@ class GameViewModel(
 
     fun stopScreenRecording() {
         MyMediaRecorderManager.stopScreenRecord()
+    }
+
+    private fun updateFileName() {
+        gameState = gameState.copy(
+            currentGameFileName = MyMediaRecorderManager.fileName
+        )
     }
 
 

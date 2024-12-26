@@ -8,10 +8,9 @@ import androidx.lifecycle.viewModelScope
 import io.github.livenlearnaday.mytictactoe.data.model.GameRecord
 import io.github.livenlearnaday.mytictactoe.usecase.interfaces.DeleteGameRecordByIdUseCase
 import io.github.livenlearnaday.mytictactoe.usecase.interfaces.FetchGameRecordsUseCase
-import io.github.livenlearnaday.mytictactoe.utils.checkIfFileExist
-import io.github.livenlearnaday.mytictactoe.utils.getVideoFilePath
+import io.github.livenlearnaday.mytictactoe.utils.checkIfFileExistByFileName
+import io.github.livenlearnaday.mytictactoe.utils.deleteFileByFileName
 import kotlinx.coroutines.launch
-import java.io.File
 
 class HistoryViewModel(
     private val fetchGameRecordsUseCase: FetchGameRecordsUseCase,
@@ -57,11 +56,7 @@ class HistoryViewModel(
     }
 
     private fun deleteFileInDevice(record: GameRecord) {
-        val filePath = record.fileName.getVideoFilePath
-        val file = File(filePath).absoluteFile
-        if (record.fileName.checkIfFileExist()) {
-            file.delete()
-        }
+        record.fileName.deleteFileByFileName()
     }
 
     private fun checkSavedFiles(records: List<GameRecord>) {
@@ -76,7 +71,7 @@ class HistoryViewModel(
         var recordsUpdated = 0
 
         when {
-            record.fileName.checkIfFileExist() -> record
+            record.fileName.checkIfFileExistByFileName() -> record
             else -> {
                 deleteGameRecordById(record)
                 recordsUpdated++

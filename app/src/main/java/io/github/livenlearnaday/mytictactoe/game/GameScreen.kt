@@ -1,3 +1,6 @@
+package io.github.livenlearnaday.mytictactoe.game
+
+import MyTicTacToeTheme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +29,6 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,10 +43,6 @@ import io.github.livenlearnaday.mytictactoe.R
 import io.github.livenlearnaday.mytictactoe.data.enums.Player
 import io.github.livenlearnaday.mytictactoe.data.enums.UiMode
 import io.github.livenlearnaday.mytictactoe.data.model.Cell
-import io.github.livenlearnaday.mytictactoe.game.GameAction
-import io.github.livenlearnaday.mytictactoe.game.GameState
-import io.github.livenlearnaday.mytictactoe.game.GameViewModel
-import io.github.livenlearnaday.mytictactoe.media.MyMediaRecorderManager
 import io.github.livenlearnaday.mytictactoe.ui.component.CellWidget
 import io.github.livenlearnaday.mytictactoe.ui.component.CommonAlertDialog
 import io.github.livenlearnaday.mytictactoe.ui.component.CommonButton
@@ -70,15 +68,16 @@ fun GameScreen(
             onConfirm = {
                 when (gameState.uiMode) {
                     UiMode.RESET_ALL -> {
+                        onGameAction(GameAction.StopRecording)
                         onGameAction(GameAction.ResetAll)
                     }
 
                     UiMode.RESET_GAME -> {
+                        onGameAction(GameAction.StopRecording)
                         onGameAction(GameAction.ResetGame)
                     }
 
                     UiMode.NO_ACTION -> {
-                        // no action
                     }
                 }
             },
@@ -87,12 +86,6 @@ fun GameScreen(
             },
             dialogText = stringResource(R.string.dialog_reset_game_warning)
         )
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            MyMediaRecorderManager.stopScreenRecord()
-        }
     }
 
     LaunchedEffect(gameState.isMoved) {
@@ -291,6 +284,7 @@ fun GameScreen(
 
 
         if (gameState.winner.isWon) {
+            onGameAction(GameAction.StopRecording)
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -338,7 +332,7 @@ fun GameScreen(
 fun DefaultPreview() {
     MyTicTacToeTheme {
         GameScreen(
-            gameViewModel = GameViewModel(saveGameRecordUseCase = SaveGameRecordUseCase { }),
+            gameViewModel = GameViewModel(saveGameRecordUseCase = { }),
             onHistoryButtonClicked = { },
             gameState = GameState(),
             onGameAction = {}

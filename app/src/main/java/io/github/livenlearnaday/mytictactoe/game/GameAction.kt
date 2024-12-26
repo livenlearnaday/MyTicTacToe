@@ -6,7 +6,6 @@ import io.github.livenlearnaday.mytictactoe.data.model.Cell
 sealed interface GameAction {
     data object ResetGame : GameAction
     data object ResetAll : GameAction
-    data class GameCellClicked(val cell: Cell) : GameAction
     data class DialogDismiss(val uiMode: UiMode) : GameAction
     data object DialogClose : GameAction
     data object OnPlayerMove : GameAction
@@ -16,6 +15,7 @@ sealed interface GameAction {
     data object OnClickMultiPlayerMode : GameAction
     data object OnClickSinglePlayerMode : GameAction
     data class OnClickCell(val cell: Cell) : GameAction
+    data object StopRecording : GameAction
 
 
 }

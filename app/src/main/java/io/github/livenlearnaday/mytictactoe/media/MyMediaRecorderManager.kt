@@ -3,6 +3,7 @@ package io.github.livenlearnaday.mytictactoe.media
 import android.media.MediaRecorder
 import android.os.Environment
 import android.util.Log
+import android.util.Size
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -11,9 +12,15 @@ import java.util.Date
 
 object MyMediaRecorderManager {
 
-    const val FILE_FORMAT_VIDEO = ".mp4"
+    private const val TAG = "MyMediaRecorderManager"
+    private const val DISPLAY_WIDTH: Int = 640
+    private const val DISPLAY_HEIGHT: Int = 360
+    private const val bitRate = 500 * 1000
+    private const val frameRate = 30
+    const val FILE_FORMAT_VIDEO = ".webm"
     private const val FILE_FOLDER = "/mytictactoe"
     private const val SEPARATOR = "/"
+
 
 
     private var mMediaRecorder: MediaRecorder? = null
@@ -31,8 +38,6 @@ object MyMediaRecorderManager {
 
     var isMediaRecorderError: Boolean = false
 
-    var isAbortGame: Boolean = false
-
     private lateinit var currentFile: File
 
 
@@ -45,47 +50,63 @@ object MyMediaRecorderManager {
         mMediaRecorder?.reset()
         mMediaRecorder?.apply {
             setVideoSource(MediaRecorder.VideoSource.SURFACE)
-            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            setVideoEncoder(MediaRecorder.VideoEncoder.H264)
-            setOutputFile(createVideoFile())
+            setOutputFormat(MediaRecorder.OutputFormat.WEBM)
+            setVideoSize(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+            setVideoFrameRate(frameRate)
+            setVideoEncoder(MediaRecorder.VideoEncoder.VP8)
+            setVideoEncodingBitRate(bitRate)
 
-        }
-        try {
-            mMediaRecorder?.prepare()
-        } catch (e: IOException) {
-            isMediaRecorderError = true
-            Log.e("MyMediaRecorderManager", "e: $e")
-            currentFile.delete()
-            e.printStackTrace()
-        } finally {
-            releaseResource()
+            createDirectory()
+            fileName = SimpleDateFormat("dd-MM-yyyy-hh_mm_ss").format(Date())
+            filePath = filePathPrefix + StringBuilder(fileName)
+                .append(FILE_FORMAT_VIDEO)
+                .toString()
+            currentFile = File(filePath)
+
+            setOutputFile(currentFile)
+
+            try {
+                prepare()
+                start()
+            } catch (e: IllegalStateException) {
+                Log.e(TAG, Log.getStackTraceString(e))
+                isMediaRecorderError = true
+            } catch (e: RuntimeException) {
+                isMediaRecorderError = true
+                Log.e(TAG, Log.getStackTraceString(e))
+            } catch (e: IOException) {
+                Log.e(TAG, Log.getStackTraceString(e))
+                isMediaRecorderError = true
+            } finally {
+                clearResourceOnError()
+            }
         }
     }
 
 
     fun startScreenRecord() {
-        if (mMediaRecorder == null) {
-            initRecorder()
-            mMediaRecorder?.start()
-        }
-
+        initRecorder()
     }
 
     fun stopScreenRecord() {
-        try {
-            mMediaRecorder?.stop()
-            mMediaRecorder?.reset()
-            if (isAbortGame) currentFile.delete()
-        } catch (e: RuntimeException) {
-            isMediaRecorderError = true
-            Log.e(
-                "MyMediaRecorderManager",
-                "e: $e"
-            )
-            currentFile.delete()
-            e.printStackTrace()
-        } finally {
-            releaseResource()
+        if (mMediaRecorder == null) return
+
+        mMediaRecorder?.apply {
+            try {
+                stop()
+                reset()
+            } catch (e: IllegalStateException) {
+                isMediaRecorderError = true
+                Log.e(TAG, Log.getStackTraceString(e))
+            } catch (e: RuntimeException) {
+                isMediaRecorderError = true
+                Log.e(TAG, Log.getStackTraceString(e))
+            } catch (e: IOException) {
+                isMediaRecorderError = true
+                Log.e(TAG, Log.getStackTraceString(e))
+            } finally {
+                clearResourceOnError()
+            }
         }
     }
 
@@ -106,20 +127,10 @@ object MyMediaRecorderManager {
         }
     }
 
-    private fun createVideoFile(): File {
-        createDirectory()
-        fileName = createFileName()
-        filePath = filePathPrefix + StringBuilder(fileName)
-            .append(FILE_FORMAT_VIDEO)
-            .toString()
-        currentFile = File(filePath)
-
-        return currentFile
+    private fun clearResourceOnError() {
+        if (isMediaRecorderError) {
+            releaseResource()
+        }
     }
-
-    private fun createFileName(): String {
-        return SimpleDateFormat("dd-MM-yyyy-hh_mm_ss").format(Date())
-    }
-
 
 }
