@@ -1,21 +1,29 @@
 [versions]
 
+android-compileSdk = "35"
+android-minSdk = "28"
+android-targetSdk = "34"
+
+
 activityCompose = "1.9.3"
 androidxAppcompat = "1.7.0"
-androidxComposeBom = "2024.06.00"
-androidxCoreKtx = "1.13.0"
-gradle = "8.4.1"
-kotlin = "2.0.0"
+androidxComposeBom = "2024.12.01"
+androidxCoreKtx = "1.15.0"
+gradle = "8.6.1"
+kotlin = "2.0.21"
 voyager = "1.0.0"
 koinVersion = "4.0.0"
-koinCompose = "1.2.0-Beta5"
+koinCompose = "4.0.0"
 material3Android = "1.3.1"
 room = "2.6.1"
-ksp = "2.0.0-1.0.22"
-accompanist = "0.31.1-alpha"
+ksp = "2.0.21-1.0.27"
+accompanist = "0.32.0"
 securityCryptoVersion = "1.1.0-alpha06"
 coreKtx = "1.6.1"
-media3 = "1.4.1"
+media3 = "1.5.1"
+navigationCompose = "2.8.5"
+androidxLifecycle = "2.8.7"
+
 
 
 #Test libs version
@@ -23,6 +31,7 @@ junit = "4.13.2"
 mockk = "1.13.13"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+uiautomator = "2.3.0"
 
 
 
@@ -65,6 +74,10 @@ voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voy
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 
 
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
+
 google-accompanist = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist"}
 
 securityCrypto = { module = "androidx.security:security-crypto-ktx", version.ref = "securityCryptoVersion" }
@@ -72,6 +85,9 @@ securityCrypto = { module = "androidx.security:security-crypto-ktx", version.ref
 
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3" }
+
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 
 #Test libs
@@ -80,6 +96,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 androidx-test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtx" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 
 
 

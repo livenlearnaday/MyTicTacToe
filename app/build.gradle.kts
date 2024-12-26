@@ -14,11 +14,11 @@ room {
 
 android {
     namespace = "io.github.livenlearnaday.mytictactoe"
-    compileSdk = 34
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "io.github.livenlearnaday.mytictactoe"
-        minSdk = 26
+        minSdk = libs.versions.android.minSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -27,7 +27,7 @@ android {
             useSupportLibrary = true
         }
 
-        lint.targetSdk = 34
+        lint.targetSdk = libs.versions.android.targetSdk.get().toInt()
     }
 
     ksp {
@@ -74,7 +74,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
-
+    implementation(libs.androidx.navigation.compose)
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))
@@ -88,6 +88,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
+
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     // voyager compose navigation
     implementation(libs.voyager.koin)
@@ -107,7 +111,6 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
 
-
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.google.accompanist)
@@ -115,6 +118,7 @@ dependencies {
 
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.dash)
 
     //testing
     testImplementation(libs.junit)
