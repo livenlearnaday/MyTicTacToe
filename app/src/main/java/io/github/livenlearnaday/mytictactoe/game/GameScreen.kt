@@ -13,8 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.Refresh
@@ -47,7 +48,6 @@ import io.github.livenlearnaday.mytictactoe.ui.component.CellWidget
 import io.github.livenlearnaday.mytictactoe.ui.component.CommonAlertDialog
 import io.github.livenlearnaday.mytictactoe.ui.component.CommonButton
 import io.github.livenlearnaday.mytictactoe.ui.component.GridSizeDropDownList
-import io.github.livenlearnaday.mytictactoe.usecase.interfaces.SaveGameRecordUseCase
 
 
 @Composable
@@ -207,21 +207,18 @@ fun GameScreen(
                 onClick = {
                     onGameAction(GameAction.OnClickMultiPlayerMode)
                 },
-                shape = RoundedCornerShape(
-                    topStart = 15.dp,
-                    bottomStart = 15.dp,
+                shape = CutCornerShape(
+                    topStart = 0.dp,
+                    bottomStart = 0.dp,
                     topEnd = 0.dp,
                     bottomEnd = 0.dp
                 ),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (gameState.isSinglePlayer) Color.Transparent else MaterialTheme.colorScheme.primary
                 ),
-                border = if (gameState.isSinglePlayer) BorderStroke(
+                border = BorderStroke(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outline
-                ) else BorderStroke(
-                    width = 1.dp,
-                    Color.Transparent
                 )
             ) {
                 Text(
@@ -230,23 +227,22 @@ fun GameScreen(
                 )
             }
 
+            Spacer(modifier = Modifier.width(20.dp))
+
             OutlinedButton(
                 onClick = {
                     onGameAction(GameAction.OnClickSinglePlayerMode)
                 },
-                shape = RoundedCornerShape(
+                shape = CutCornerShape(
                     topStart = 0.dp,
                     bottomStart = 0.dp,
-                    topEnd = 15.dp,
-                    bottomEnd = 15.dp
+                    topEnd = 0.dp,
+                    bottomEnd = 0.dp
                 ),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (gameState.isSinglePlayer) MaterialTheme.colorScheme.primary else Color.Transparent
                 ),
-                border = if (gameState.isSinglePlayer) BorderStroke(
-                    width = 1.dp,
-                    Color.Transparent
-                ) else BorderStroke(
+                border = BorderStroke(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outline
                 )

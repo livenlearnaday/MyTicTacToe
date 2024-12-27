@@ -339,7 +339,6 @@ class GameViewModel(
 
     fun resetAll() {
         resetGame()
-        updateIsSinglePlayer(false, false)
         updateUiModeAndDialogTrigger(UiMode.NO_ACTION, false)
     }
 
