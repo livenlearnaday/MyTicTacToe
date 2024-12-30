@@ -40,11 +40,11 @@ class MainActivity : ComponentActivity() {
 
     private var isReceiverRegistered = false
 
-    private var mediaProjectionManager: MediaProjectionManager? = null
+    private var mMediaProjectionManager: MediaProjectionManager? = null
 
     private var mMediaProjection: MediaProjection? = null
 
-    private var startMediaProjectionActivity: ActivityResultLauncher<Intent>? = null
+    private var mStartMediaProjectionActivity: ActivityResultLauncher<Intent>? = null
 
     class MyBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -63,33 +63,34 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-            setContent {
-                MyTicTacToeTheme {
-                    val navController = rememberNavController()
+        setContent {
+            MyTicTacToeTheme {
+                val navController = rememberNavController()
 
 
-                    val permissionStates = rememberMultiplePermissionsState(
-                        permissions = listOf(
-                            WRITE_EXTERNAL_STORAGE
-                        )
+                val permissionStates = rememberMultiplePermissionsState(
+                    permissions = listOf(
+                        WRITE_EXTERNAL_STORAGE
                     )
+                )
 
-                    if (permissionStates.allPermissionsGranted) {
-                        requestScreenCapturePermission()
-                        Navigator(screen = GameScreenRoute)
-                    } else {
-                        PermissionHandlingScreen(navController = navController, permissionStates)
-                    }
+                if (permissionStates.allPermissionsGranted) {
+                    requestScreenCapturePermission()
+                    Navigator(screen = GameScreenRoute)
+                } else {
+                    PermissionHandlingScreen(navController = navController, permissionStates)
                 }
             }
         }
+    }
+
     override fun onStart() {
         super.onStart()
-        mediaProjectionManager =
+        mMediaProjectionManager =
             getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
 
 
-        startMediaProjectionActivity =
+        mStartMediaProjectionActivity =
             registerForActivityResult<Intent, ActivityResult>(
                 ActivityResultContracts.StartActivityForResult()
             ) { result: ActivityResult ->
@@ -160,12 +161,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun requestScreenCapturePermission() {
-        if (startMediaProjectionActivity != null) {
-            mediaProjectionManager =
+        mStartMediaProjectionActivity?.let { startMediaProjectionActivity ->
+            mMediaProjectionManager =
                 getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
 
-            val captureIntent = mediaProjectionManager!!.createScreenCaptureIntent()
-            startMediaProjectionActivity!!.launch(captureIntent)
+            val captureIntent = mMediaProjectionManager?.createScreenCaptureIntent()
+            captureIntent?.let {
+                startMediaProjectionActivity.launch(it)
+            }
         }
     }
 

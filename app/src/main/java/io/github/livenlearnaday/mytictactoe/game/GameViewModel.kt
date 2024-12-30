@@ -14,6 +14,10 @@ import io.github.livenlearnaday.mytictactoe.data.model.Winner
 import io.github.livenlearnaday.mytictactoe.media.MyMediaRecorderManager
 import io.github.livenlearnaday.mytictactoe.media.MyMediaRecorderManager.isMediaRecorderError
 import io.github.livenlearnaday.mytictactoe.usecase.interfaces.SaveGameRecordUseCase
+import io.github.livenlearnaday.mytictactoe.utils.checkAntiDiagonalWin
+import io.github.livenlearnaday.mytictactoe.utils.checkColumnWin
+import io.github.livenlearnaday.mytictactoe.utils.checkDiagonalWin
+import io.github.livenlearnaday.mytictactoe.utils.checkRowWin
 import io.github.livenlearnaday.mytictactoe.utils.deleteFileByFileName
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -156,7 +160,7 @@ class GameViewModel(
             updateCell(Cell(row = row, column = col, player = gameState.currentPlayer))
             updateCurrentPlayer(if (gameState.currentPlayer == Player.X) Player.O else Player.X)
 
-            checkForWin()
+            checkGameWin()
             return true
         }
 
@@ -190,7 +194,7 @@ class GameViewModel(
 
                 updateCurrentPlayer(if (gameState.currentPlayer == Player.X) Player.O else Player.X)
 
-                checkForWin()
+                checkGameWin()
             }
         }
 
@@ -205,15 +209,13 @@ class GameViewModel(
     }
 
 
-    fun checkForWin() {
+    fun checkGameWin() {
         if (gameState.moveCount > 2) {
 
             // Check rows
             for (row in 0 until gameState.gridSize) {
-                val rowsWithPLayerX =
-                    (0 until gameState.gridSize).all { _cells.value[row][it].player == Player.X }
-                val rowsWithPLayerO =
-                    (0 until gameState.gridSize).all { _cells.value[row][it].player == Player.O }
+                val rowsWithPLayerX = checkRowWin(row, Player.X, _cells.value, gameState.gridSize)
+                val rowsWithPLayerO = checkRowWin(row, Player.O, _cells.value, gameState.gridSize)
 
                 when {
                     rowsWithPLayerX -> {
@@ -236,10 +238,8 @@ class GameViewModel(
 
             // Check columns
             for (col in 0 until gameState.gridSize) {
-                val colWithPLayerX =
-                    (0 until gameState.gridSize).all { _cells.value[it][col].player == Player.X }
-                val colWithPLayerO =
-                    (0 until gameState.gridSize).all { _cells.value[it][col].player == Player.O }
+                val colWithPLayerX = checkColumnWin(col, Player.X, _cells.value, gameState.gridSize)
+                val colWithPLayerO = checkColumnWin(col, Player.O, _cells.value, gameState.gridSize)
 
                 when {
                     colWithPLayerX -> {
@@ -259,10 +259,8 @@ class GameViewModel(
             }
 
             // Check diagonals
-            val mainDiagWithPlayerX =
-                (0 until gameState.gridSize).all { _cells.value[it][it].player == Player.X }
-            val mainDiagWithPlayerO =
-                (0 until gameState.gridSize).all { _cells.value[it][it].player == Player.O }
+            val mainDiagWithPlayerX = checkDiagonalWin(Player.X, _cells.value, gameState.gridSize)
+            val mainDiagWithPlayerO = checkDiagonalWin(Player.O, _cells.value, gameState.gridSize)
 
             when {
                 mainDiagWithPlayerX -> {
@@ -280,11 +278,10 @@ class GameViewModel(
                 }
             }
 
-            // not sure about this...
             val antiDiagWithPlayerX =
-                (0 until gameState.gridSize).all { _cells.value[it][(gameState.gridSize - 1) - it].player == Player.X }
+                checkAntiDiagonalWin(Player.X, _cells.value, gameState.gridSize)
             val antiDiagWithPlayerO =
-                (0 until gameState.gridSize).all { _cells.value[it][(gameState.gridSize - 1) - it].player == Player.O }
+                checkAntiDiagonalWin(Player.O, _cells.value, gameState.gridSize)
 
             when {
                 antiDiagWithPlayerX -> {
