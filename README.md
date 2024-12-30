@@ -19,4 +19,3 @@ Pending improvement / fixes:
 - to add tests
 - to fix winning algo for grid size more than 3
 - to improve machine / AI moves
-- to fix video file saved (currently, file is saved but there is issue with the file)
