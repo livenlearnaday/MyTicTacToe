@@ -13,13 +13,8 @@ data class VideoPlayScreenRoute( val gameRecord: GameRecord): Screen {
 
     @Composable
     override fun Content() {
-        val historyViewModel = koinViewModel<HistoryViewModel>()
-        val navigator = LocalNavigator.currentOrThrow
-        val historyState = historyViewModel.historyState
-
-
         HistoryItemVideoPlayScreen(
-            filePath = gameRecord.filePath
+            gameRecord = gameRecord
         )
     }
 

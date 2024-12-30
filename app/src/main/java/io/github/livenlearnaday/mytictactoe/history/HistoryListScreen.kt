@@ -32,12 +32,6 @@ fun HistoryListScreen(
    modifier: Modifier = Modifier
 ) {
 
-   DisposableEffect(Unit) {
-      onDispose {
-         MyVideoPlayerManager.stop()
-      }
-   }
-
    LaunchedEffect (historyState.isRecordsUpdated) {
       onHistoryListAction(HistoryListAction.OnRecordsUpdated)
    }

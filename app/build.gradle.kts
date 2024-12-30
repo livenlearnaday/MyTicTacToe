@@ -31,7 +31,7 @@ android {
     }
 
     ksp {
-        arg("room.schemaLocation", "$projectDir/schemas".toString())
+        arg("room.schemaLocation", "$projectDir/schemas")
     }
 
     buildTypes {
@@ -115,6 +115,7 @@ dependencies {
 
     implementation(libs.google.accompanist)
     implementation(libs.securityCrypto)
+    implementation (libs.localbroadcastmanager)
 
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.exoplayer)

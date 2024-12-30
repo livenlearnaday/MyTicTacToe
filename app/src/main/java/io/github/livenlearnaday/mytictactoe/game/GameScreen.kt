@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,6 +59,7 @@ fun GameScreen(
     onGameAction: (GameAction) -> Unit
 ) {
 
+    val context = LocalContext.current
     val cells by gameViewModel.cells.collectAsState()
 
     if (gameState.isShowDialog) {
@@ -91,7 +93,6 @@ fun GameScreen(
     LaunchedEffect(gameState.isMoved) {
         onGameAction(GameAction.OnPlayerMove)
     }
-
 
     Column(
         modifier = Modifier
@@ -267,7 +268,7 @@ fun GameScreen(
                     CellWidget(
                         cell = cell,
                         onClick = {
-                            onGameAction(GameAction.OnClickCell(cell))
+                            onGameAction(GameAction.OnClickCell(cell, context))
                         },
                         modifier = Modifier
                             .size(50.dp)
@@ -280,7 +281,6 @@ fun GameScreen(
 
 
         if (gameState.winner.isWon) {
-            onGameAction(GameAction.StopRecording)
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),

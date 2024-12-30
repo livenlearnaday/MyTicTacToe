@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+
 
     <application
         android:name=".MyApplication"
@@ -20,7 +23,6 @@
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:label="@string/app_name"
             android:theme="@style/Theme.MyTicTacToe">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +30,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <service
+            android:name=".service.MyMediaProjectionService"
+            android:foregroundServiceType="mediaProjection"
+            />
+
     </application>
 
 </manifest>

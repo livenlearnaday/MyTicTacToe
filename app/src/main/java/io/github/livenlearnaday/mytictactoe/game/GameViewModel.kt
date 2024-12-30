@@ -1,5 +1,6 @@
 package io.github.livenlearnaday.mytictactoe.game
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -84,6 +85,7 @@ class GameViewModel(
             }
 
             GameAction.OnClickHistoryPlaysIcon -> {
+                MyMediaRecorderManager.releaseMediaRecorderResource()
                 resetGame()
             }
 
@@ -109,13 +111,30 @@ class GameViewModel(
             }
 
             is GameAction.OnClickCell -> {
-                if (gameState.moveCount == 0) {
-                    startScreenRecording()
-                    updateFileName()
+                when {
+                    gameState.moveCount == 0 -> {
+                        startScreenRecording(action.context)
+                        updateFileName()
+                        updateIsMoved(
+                            makeMove(
+                                action.cell.row,
+                                action.cell.column
+                            )
+                        )
 
-                }
-                if (!gameState.winner.isWon) {
-                    updateIsMoved(makeMove(action.cell.row, action.cell.column))
+                    }
+
+                    !gameState.winner.isWon -> updateIsMoved(
+                        makeMove(
+                            action.cell.row,
+                            action.cell.column
+                        )
+                    )
+
+                    gameState.winner.isWon && gameState.moveCount > 2 -> stopScreenRecording()
+
+                    else -> { } // no op
+
                 }
             }
 
@@ -299,7 +318,6 @@ class GameViewModel(
 
     fun resetGame() {
         if (!gameState.winner.isWon) gameState.currentGameFileName.deleteFileByFileName()
-
         gameState = gameState.copy(
             winner = Winner(currentPlayer = Player.EMPTY, isWon = false),
             currentPlayer = Player.X,
@@ -396,8 +414,8 @@ class GameViewModel(
         }
     }
 
-    fun startScreenRecording() {
-        MyMediaRecorderManager.startScreenRecord()
+    fun startScreenRecording(context: Context) {
+        MyMediaRecorderManager.startScreenRecord(context)
     }
 
     fun stopScreenRecording() {
