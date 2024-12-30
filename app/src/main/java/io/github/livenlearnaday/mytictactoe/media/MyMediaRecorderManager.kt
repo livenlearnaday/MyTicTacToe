@@ -126,6 +126,7 @@ object MyMediaRecorderManager {
 
 
     fun startScreenRecord(context: Context) {
+        if(mMediaProjection == null ) return
         initRecorder(context)
         mMediaRecorder?.start()
     }
