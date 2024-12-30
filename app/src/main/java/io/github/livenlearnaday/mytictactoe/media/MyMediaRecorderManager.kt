@@ -177,7 +177,6 @@ object MyMediaRecorderManager {
     }
 
     fun releaseMediaRecorderResource() {
-        mMediaRecorder?.pause()
         if(mMediaRecorder != null){
             releaseResource()
         }
