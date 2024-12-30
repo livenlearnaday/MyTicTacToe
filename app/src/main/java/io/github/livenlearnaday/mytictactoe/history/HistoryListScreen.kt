@@ -13,7 +13,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.livenlearnaday.mytictactoe.R
 import io.github.livenlearnaday.mytictactoe.data.model.GameRecord
-import io.github.livenlearnaday.mytictactoe.media.MyVideoPlayerManager
 
 @Composable
 fun HistoryListScreen(
