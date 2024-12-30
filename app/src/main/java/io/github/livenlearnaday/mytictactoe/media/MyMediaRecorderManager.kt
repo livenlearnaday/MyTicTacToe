@@ -23,9 +23,6 @@ import java.util.Date
 object MyMediaRecorderManager {
 
     private const val TAG = "MyMediaRecorderManager"
-    private const val DISPLAY_WIDTH: Int = 640
-    private const val DISPLAY_HEIGHT: Int = 360
-    private const val DISPLAY_DENSITY: Int = 160 //mdpi 160 dpi baseline , hdpi 240 dpi
     private const val BIT_RATE = 500 * 1000
     private const val FRAME_RATE = 30
     const val FILE_FORMAT_VIDEO = ".mp4"
