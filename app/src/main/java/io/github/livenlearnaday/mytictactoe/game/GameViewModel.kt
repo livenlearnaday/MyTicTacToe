@@ -154,7 +154,7 @@ class GameViewModel(
     }
 
 
-    fun makeMove(row: Int, col: Int): Boolean {
+    private fun makeMove(row: Int, col: Int): Boolean {
 
         if (_cells.value[row][col].player == Player.EMPTY) {
             updateCell(Cell(row = row, column = col, player = gameState.currentPlayer))
@@ -167,7 +167,7 @@ class GameViewModel(
         return false
     }
 
-    fun makeAIMove() {
+    private fun makeAIMove() {
         val emptyCells = mutableListOf<Cell>()
 
         for (i in 0 until gameState.gridSize) {
@@ -202,14 +202,14 @@ class GameViewModel(
         updateIsMoved(false)
     }
 
-    fun updateIsMoved(isMoved: Boolean) {
+    private fun updateIsMoved(isMoved: Boolean) {
         gameState = gameState.copy(
             isMoved = isMoved
         )
     }
 
 
-    fun checkGameWin() {
+    private fun checkGameWin() {
         if (gameState.moveCount > 2) {
 
             // Check rows
@@ -313,7 +313,7 @@ class GameViewModel(
     }
 
 
-    fun resetGame() {
+    private fun resetGame() {
         if (!gameState.winner.isWon) gameState.currentGameFileName.deleteFileByFileName()
         gameState = gameState.copy(
             winner = Winner(currentPlayer = Player.EMPTY, isWon = false),
@@ -326,44 +326,44 @@ class GameViewModel(
 
     }
 
-    fun updateCurrentPlayer(currentPlayer: Player) {
+    private fun updateCurrentPlayer(currentPlayer: Player) {
         gameState = gameState.copy(
             currentPlayer = currentPlayer
         )
     }
 
-    fun updateUiMode(uiMode: UiMode) {
+    private fun updateUiMode(uiMode: UiMode) {
         gameState = gameState.copy(
             uiMode = uiMode
         )
     }
 
-    fun updateIsShowDialog(isShowDialog: Boolean) {
+    private fun updateIsShowDialog(isShowDialog: Boolean) {
         gameState = gameState.copy(
             isShowDialog = isShowDialog
         )
     }
 
 
-    fun updateIsSinglePlayer(isSinglePlayer: Boolean, isChangedPlayerMode: Boolean) {
+    private fun updateIsSinglePlayer(isSinglePlayer: Boolean, isChangedPlayerMode: Boolean) {
         gameState = gameState.copy(
             isSinglePlayer = isSinglePlayer,
             isChangedPlayerMode = isChangedPlayerMode
         )
     }
 
-    fun resetAll() {
+    private fun resetAll() {
         resetGame()
         updateUiModeAndDialogTrigger(UiMode.NO_ACTION, false)
     }
 
-    fun updateGridSize(gridSize: Int) {
+    private fun updateGridSize(gridSize: Int) {
         gameState = gameState.copy(
             gridSize = gridSize
         )
     }
 
-    fun resetCells(gridSize: Int) {
+    private fun resetCells(gridSize: Int) {
         _cells.value = MutableList(gridSize) { row ->
             MutableList(gridSize) { col ->
                 Cell(row = row, column = col, player = Player.EMPTY)
@@ -371,7 +371,7 @@ class GameViewModel(
         }
     }
 
-    fun updateCell(cell: Cell) {
+    private fun updateCell(cell: Cell) {
         _cells.value[cell.row][cell.column] = cell
 
         incrementMoveCount()
@@ -399,23 +399,23 @@ class GameViewModel(
         }
     }
 
-    fun updateGameBoard(gridSize: String) {
+    private fun updateGameBoard(gridSize: String) {
         val gridSizeToUpdate = gridSize.toIntOrNull() ?: DEFAULT_GRID_SIZE
         updateGridSize(gridSizeToUpdate)
         resetGame()
     }
 
-    fun saveGameRecord(gameRecord: GameRecord) {
+    private fun saveGameRecord(gameRecord: GameRecord) {
         viewModelScope.launch {
             saveGameRecordUseCase.execute(gameRecord)
         }
     }
 
-    fun startScreenRecording(context: Context) {
+    private fun startScreenRecording(context: Context) {
         MyMediaRecorderManager.startScreenRecord(context)
     }
 
-    fun stopScreenRecording() {
+    private fun stopScreenRecording() {
         MyMediaRecorderManager.stopScreenRecord()
     }
 

@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
     alias(libs.plugins.application.android)
     alias(libs.plugins.org.jetbrains.kotlin.android)
@@ -55,11 +57,29 @@ android {
             "-opt-in=androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi",
             "-opt-in=com.google.accompanist.permissions.ExperimentalPermissionsApi",
             "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
         )
 
     }
     buildFeatures {
         compose = true
+    }
+
+    testOptions {
+        animationsDisabled = true
+        unitTests {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
+        }
+        unitTests.all {
+            it.jvmArgs(
+                listOf(
+                    "-Djdk.attach.allowAttachSelf=true",
+                    "-XX:+StartAttachListener",
+                    "-Djdk.instrument.traceUsage"
+                )
+            )
+        }
     }
 
     packaging {
@@ -123,12 +143,27 @@ dependencies {
 
     //testing
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit.ktx)
     testImplementation(libs.mockk)
     testImplementation(libs.androidx.test.core.ktx)
-    androidTestImplementation(libs.androidx.junit)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.androidx.test.runner)
+    testImplementation(libs.androidx.test.ext.junit)
+    testImplementation(libs.robolectric)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.tooling)
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(libs.coroutinesTest)
+}
+
+tasks.withType<Test> {
+    testLogging {
+        exceptionFormat = TestExceptionFormat.FULL
+        showStackTraces = true
+        showStandardStreams = true
+    }
 }
