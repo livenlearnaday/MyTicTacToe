@@ -20,21 +20,12 @@ class HistoryViewModel(
     var historyState by mutableStateOf(HistoryState())
         private set
 
-    init {
-        getGameRecordsFromDb()
-
-    }
-
     fun historyListAction(action: HistoryListAction) {
         when (action) {
             is HistoryListAction.OnDeleteById -> {
                 deleteGameRecordById(action.gameRecord)
             }
-
-            is HistoryListAction.OnRecordsUpdated -> {
-                getGameRecordsFromDb()
-
-            }
+           else -> getGameRecordsFromDb()
         }
     }
 

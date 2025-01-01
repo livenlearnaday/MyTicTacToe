@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,10 @@ fun HistoryListScreen(
 
    LaunchedEffect (historyState.isRecordsUpdated) {
       onHistoryListAction(HistoryListAction.OnRecordsUpdated)
+   }
+
+   LaunchedEffect(Unit) {
+      onHistoryListAction(HistoryListAction.OnScreenLaunched)
    }
 
    Surface {
@@ -52,7 +57,8 @@ fun HistoryListScreen(
                contentAlignment = Alignment.TopStart) {
 
                LazyColumn(
-                  modifier = modifier.padding(vertical = 4.dp),
+                  modifier = Modifier.testTag("records")
+                     .padding(vertical = 4.dp),
                   verticalArrangement = Arrangement.spacedBy(8.dp),
                ) {
                   items(items = historyState.gameRecords) { record ->
