@@ -11,11 +11,11 @@ Components used:
 - voyager for compose navigation
 - room for local database
 - accompanist for permission request
+- MediaProjection and MediaRecorder for creating virtual display to record gameplay screen when screen cast permission is allowed
 
 
 
 
 Pending improvement / fixes:
-- to add tests
 - to fix winning algo for grid size more than 3
 - to improve machine / AI moves
