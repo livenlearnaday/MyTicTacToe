@@ -17,5 +17,4 @@ Components used:
 
 
 Pending improvement / fixes:
-- to fix winning algo for grid size more than 3
 - to improve machine / AI moves

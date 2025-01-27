@@ -75,10 +75,6 @@ class GameViewModel(
                 }
             }
 
-            is GameAction.OnGridSizeChange -> {
-                updateGameBoard(action.gridSizeString)
-            }
-
             GameAction.OnClickResetIcon -> {
                 when {
                     gameState.moveCount == 0 -> resetAll()
@@ -357,12 +353,6 @@ class GameViewModel(
         updateUiModeAndDialogTrigger(UiMode.NO_ACTION, false)
     }
 
-    private fun updateGridSize(gridSize: Int) {
-        gameState = gameState.copy(
-            gridSize = gridSize
-        )
-    }
-
     private fun resetCells(gridSize: Int) {
         _cells.value = MutableList(gridSize) { row ->
             MutableList(gridSize) { col ->
@@ -397,12 +387,6 @@ class GameViewModel(
                 )
             )
         }
-    }
-
-    private fun updateGameBoard(gridSize: String) {
-        val gridSizeToUpdate = gridSize.toIntOrNull() ?: DEFAULT_GRID_SIZE
-        updateGridSize(gridSizeToUpdate)
-        resetGame()
     }
 
     private fun saveGameRecord(gameRecord: GameRecord) {

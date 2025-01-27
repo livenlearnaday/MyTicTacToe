@@ -48,7 +48,6 @@ import io.github.livenlearnaday.mytictactoe.data.model.Cell
 import io.github.livenlearnaday.mytictactoe.ui.component.CellWidget
 import io.github.livenlearnaday.mytictactoe.ui.component.CommonAlertDialog
 import io.github.livenlearnaday.mytictactoe.ui.component.CommonButton
-import io.github.livenlearnaday.mytictactoe.ui.component.GridSizeDropDownList
 
 
 @Composable
@@ -106,13 +105,6 @@ fun GameScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
-
-            GridSizeDropDownList(
-                gridSizeInput = gameState.gridSize.toString(),
-                onSelect = {
-                    onGameAction(GameAction.OnGridSizeChange(it))
-                }
-            )
 
             TooltipBox(
                 positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),

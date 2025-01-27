@@ -10,7 +10,6 @@ sealed interface GameAction {
     data class DialogDismiss(val uiMode: UiMode) : GameAction
     data object DialogClose : GameAction
     data object OnPlayerMove : GameAction
-    data class OnGridSizeChange(val gridSizeString: String) : GameAction
     data object OnClickResetIcon : GameAction
     data object OnClickHistoryPlaysIcon : GameAction
     data object OnClickMultiPlayerMode : GameAction
